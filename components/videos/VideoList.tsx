@@ -43,8 +43,6 @@ const VideoList: React.FC<VideoListProps> = ({ newUploadedVideo }) => {
     setVideos(prevVideos =>
       prevVideos.map(v => (v.id === videoId ? (updatedVideo || {...v, yt_upload_status: newStatus}) : v))
     );
-    // Optionally, you might want to re-fetch the specific video or the list after a delay for final confirmation from backend job.
-    // For now, optimistic update is fine.
   };
 
   const handlePageChange = (newPage: number) => {
@@ -66,12 +64,12 @@ const VideoList: React.FC<VideoListProps> = ({ newUploadedVideo }) => {
   }
 
   if (videos.length === 0) {
-    return <div className="text-center text-gray-600 py-10 text-lg">No videos uploaded yet.</div>;
+    return <div className="text-center text-gray-600 dark:text-gray-400 py-10 text-lg">No videos uploaded yet.</div>;
   }
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold text-gray-800 mb-6">Your Videos</h2>
+      <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-6">Your Videos</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {videos.map(video => (
           <VideoItem key={video.id} video={video} onYoutubeUploadStatusChange={handleYoutubeUploadStatusChange} />
@@ -87,7 +85,7 @@ const VideoList: React.FC<VideoListProps> = ({ newUploadedVideo }) => {
           >
             Previous
           </Button>
-          <span className="text-sm text-gray-700">
+          <span className="text-sm text-gray-700 dark:text-gray-300">
             Page {pagination.current_page} of {pagination.last_page}
           </span>
           <Button 

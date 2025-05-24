@@ -3,11 +3,11 @@ import React from 'react';
 
 interface SpinnerProps {
   size?: 'sm' | 'md' | 'lg';
-  color?: string; // Tailwind color class e.g. border-blue-500
+  color?: string; // Full Tailwind border color class e.g. 'border-primary-600 dark:border-primary-400'
   className?: string;
 }
 
-const Spinner: React.FC<SpinnerProps> = ({ size = 'md', color = 'border-primary-600', className = '' }) => {
+const Spinner: React.FC<SpinnerProps> = ({ size = 'md', color = 'border-primary-600 dark:border-primary-400', className = '' }) => {
   const sizeClasses = {
     sm: 'h-6 w-6',
     md: 'h-8 w-8',

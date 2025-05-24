@@ -27,9 +27,8 @@ const SettingsPage: React.FC = () => {
     const youtubeConnectedParam = queryParams.get('youtube_connected');
     const errorParam = queryParams.get('youtube_error');
     
-    setIsLoading(true); // Start loading before fetching user
+    setIsLoading(true); 
     
-    // Fetch user data to get the latest YouTube connection status
     fetchUser().then(() => {
       if (youtubeConnectedParam === 'true') {
         setMessage(`Successfully connected to YouTube! ${user?.youtube_channel_name ? `Channel: ${user.youtube_channel_name}` : ''}`);
@@ -51,37 +50,37 @@ const SettingsPage: React.FC = () => {
       setIsLoading(false);
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.search, fetchUser]); // Rerun when query params change or fetchUser identity changes (though it shouldn't often)
+  }, [location.search, fetchUser]); 
 
   if (isLoading || authLoading) {
     return (
-      <div className="flex flex-col items-center justify-center p-8 bg-white shadow-lg rounded-lg min-h-[300px]">
+      <div className="flex flex-col items-center justify-center p-8 bg-white dark:bg-gray-800 shadow-lg dark:shadow-2xl rounded-lg min-h-[300px]">
         <Spinner size="lg" />
-        <p className="mt-4 text-gray-600">Loading settings...</p>
+        <p className="mt-4 text-gray-600 dark:text-gray-300">Loading settings...</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white p-8 rounded-lg shadow-xl">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">Settings</h1>
+    <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-xl dark:shadow-2xl">
+      <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-6">Settings</h1>
       
       {message && <Alert type={messageType} message={message} />}
 
-      <div className="mt-8 p-6 border border-gray-200 rounded-lg">
-        <h2 className="text-xl font-semibold text-gray-700 mb-3">YouTube Connection</h2>
+      <div className="mt-8 p-6 border border-gray-200 dark:border-gray-700 rounded-lg">
+        <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-3">YouTube Connection</h2>
         {isYoutubeConnected ? (
           <div>
-            <p className="text-green-600 mb-2 flex items-center">
+            <p className="text-green-600 dark:text-green-400 mb-2 flex items-center">
                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 mr-2"><path fillRule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.06 0l4-5.5Z" clipRule="evenodd" /></svg>
               Connected as: <span className="font-medium ml-1">{youtubeChannelName || 'Your YouTube Channel'}</span>
             </p>
-            <p className="text-sm text-gray-600 mb-4">You can now upload videos directly to your YouTube channel.</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">You can now upload videos directly to your YouTube channel.</p>
             {/* Optionally add a disconnect button here if backend supports it */}
           </div>
         ) : (
           <div>
-            <p className="text-gray-700 mb-4">
+            <p className="text-gray-700 dark:text-gray-300 mb-4">
               Connect your YouTube account to enable direct video uploads from this application to your channel.
             </p>
             <a href={YOUTUBE_CONNECT_URL}>

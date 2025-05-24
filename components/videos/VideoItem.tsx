@@ -42,13 +42,13 @@ const VideoItem: React.FC<VideoItemProps> = ({ video, onYoutubeUploadStatusChang
   const getStatusBadge = (status: YTUploadStatus) => {
     switch (status) {
       case YTUploadStatus.NotUploaded:
-        return <span className="px-2 py-1 text-xs font-semibold text-gray-700 bg-gray-200 rounded-full">Not Uploaded</span>;
+        return <span className="px-2 py-1 text-xs font-semibold text-gray-700 bg-gray-200 dark:text-gray-300 dark:bg-gray-600 rounded-full">Not Uploaded</span>;
       case YTUploadStatus.Uploading:
-        return <span className="px-2 py-1 text-xs font-semibold text-yellow-700 bg-yellow-200 rounded-full animate-pulse">Uploading to YT...</span>;
+        return <span className="px-2 py-1 text-xs font-semibold text-yellow-700 bg-yellow-200 dark:text-yellow-300 dark:bg-yellow-700/50 rounded-full animate-pulse">Uploading to YT...</span>;
       case YTUploadStatus.Uploaded:
-        return <span className="px-2 py-1 text-xs font-semibold text-green-700 bg-green-200 rounded-full">Uploaded to YT</span>;
+        return <span className="px-2 py-1 text-xs font-semibold text-green-700 bg-green-200 dark:text-green-300 dark:bg-green-700/50 rounded-full">Uploaded to YT</span>;
       case YTUploadStatus.Failed:
-        return <span className="px-2 py-1 text-xs font-semibold text-red-700 bg-red-200 rounded-full">YT Upload Failed</span>;
+        return <span className="px-2 py-1 text-xs font-semibold text-red-700 bg-red-200 dark:text-red-300 dark:bg-red-700/50 rounded-full">YT Upload Failed</span>;
       default:
         return null;
     }
@@ -58,22 +58,25 @@ const VideoItem: React.FC<VideoItemProps> = ({ video, onYoutubeUploadStatusChang
 
 
   return (
-    <div className="bg-white shadow-lg rounded-lg overflow-hidden transition-shadow hover:shadow-xl">
+    <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden transition-shadow hover:shadow-xl dark:shadow-2xl dark:hover:shadow-slate-700/50">
       <img 
         src={thumbnailUrl}
         alt={video.title} 
-        className="w-full h-48 object-cover"
-        onError={(e) => (e.currentTarget.src = `https://picsum.photos/seed/${video.id}/320/180`)} // Fallback
+        className="w-full h-48 object-cover bg-gray-200 dark:bg-gray-700" // Added background for loading/error state of image
+        onError={(e) => {
+          e.currentTarget.src = `https://picsum.photos/seed/${video.id}/320/180`;
+          e.currentTarget.classList.add('bg-gray-300', 'dark:bg-gray-600'); // Ensure fallback also has a bg
+        }}
       />
       <div className="p-4">
-        <h3 className="text-lg font-semibold text-gray-800 mb-1 truncate" title={video.title}>{video.title}</h3>
-        <p className="text-xs text-gray-500 mb-2">Uploaded: {new Date(video.uploaded_at_app).toLocaleDateString()}</p>
-        <p className="text-xs text-gray-500 mb-3 truncate" title={video.original_file_name}>File: {video.original_file_name}</p>
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-1 truncate" title={video.title}>{video.title}</h3>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Uploaded: {new Date(video.uploaded_at_app).toLocaleDateString()}</p>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mb-3 truncate" title={video.original_file_name}>File: {video.original_file_name}</p>
         
         <div className="flex items-center justify-between mb-3">
           {getStatusBadge(video.yt_upload_status)}
           {video.yt_upload_status === YTUploadStatus.Uploaded && video.youtube_url && (
-            <a href={video.youtube_url} target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:text-primary-700 text-sm flex items-center">
+            <a href={video.youtube_url} target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 text-sm flex items-center">
               <YoutubeIcon className="mr-1"/> View on YouTube
             </a>
           )}
@@ -95,7 +98,7 @@ const VideoItem: React.FC<VideoItemProps> = ({ video, onYoutubeUploadStatusChang
           </Button>
         ) : null}
          {video.yt_upload_status === YTUploadStatus.Uploading && (
-           <div className="text-sm text-gray-600 mt-2 text-center">Processing YouTube upload...</div>
+           <div className="text-sm text-gray-600 dark:text-gray-400 mt-2 text-center">Processing YouTube upload...</div>
          )}
       </div>
     </div>

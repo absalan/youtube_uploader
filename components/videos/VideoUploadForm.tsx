@@ -57,8 +57,8 @@ const VideoUploadForm: React.FC<VideoUploadFormProps> = ({ onUploadSuccess }) =>
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow mb-8">
-      <h2 className="text-2xl font-semibold text-gray-800 mb-6">Upload New Video</h2>
+    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md dark:shadow-xl mb-8">
+      <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-6">Upload New Video</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && Object.keys(fieldErrors).length === 0 && <Alert type="error" message={error} onClose={() => setError(null)} />}
         {successMessage && <Alert type="success" message={successMessage} onClose={() => setSuccessMessage(null)} />}
@@ -74,7 +74,7 @@ const VideoUploadForm: React.FC<VideoUploadFormProps> = ({ onUploadSuccess }) =>
           placeholder="Enter video title"
         />
         <div>
-          <label htmlFor="video_file" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="video_file" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Video File
           </label>
           <input
@@ -85,9 +85,9 @@ const VideoUploadForm: React.FC<VideoUploadFormProps> = ({ onUploadSuccess }) =>
             required
             ref={fileInputRef}
             onChange={handleFileChange}
-            className={`mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 ${fieldErrors.video_file ? 'border-red-500 border rounded-md p-1' : ''}`}
+            className={`mt-1 block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary-50 dark:file:bg-primary-700 file:text-primary-700 dark:file:text-primary-200 hover:file:bg-primary-100 dark:hover:file:bg-primary-600 ${fieldErrors.video_file ? 'border-red-500 dark:border-red-400 border rounded-md p-1' : 'dark:border-gray-600'}`}
           />
-          {fieldErrors.video_file && <p className="mt-1 text-xs text-red-600">{fieldErrors.video_file[0]}</p>}
+          {fieldErrors.video_file && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{fieldErrors.video_file[0]}</p>}
         </div>
 
         <Button type="submit" isLoading={isLoading} disabled={isLoading || !videoFile}>
