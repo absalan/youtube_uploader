@@ -1,0 +1,5 @@
+{
+  "name": "Video Uploader Pro",
+  "description": "A React SPA for uploading videos and managing YouTube uploads. This frontend is designed to work with a Laravel API backend.",
+  "requestFramePermissions": []
+}
