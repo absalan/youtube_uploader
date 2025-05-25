@@ -48,7 +48,7 @@ const DashboardPage: React.FC = () => {
     <div className="space-y-8">
       <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md dark:shadow-xl">
         {/* Ensure user is not null before accessing properties */}
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Welcome, {user.name}!</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Welcome0, {user.name}!</h1>
         <p className="text-gray-600 dark:text-gray-300">Manage your videos and YouTube uploads.</p>
         
         {!isYoutubeConnected && (
