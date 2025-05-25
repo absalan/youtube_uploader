@@ -26,6 +26,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     localStorage.setItem('authToken', authToken);
     setToken(authToken);
     setUser(userData);
+    setLoading(false); // Explicitly set loading to false after successful login
   };
 
   const logout = useCallback(async () => {
@@ -40,6 +41,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     localStorage.removeItem('authToken');
     setToken(null);
     setUser(null);
+    setLoading(false); // Explicitly set loading to false after logout
   }, [token]);
 
   const fetchUser = useCallback(async () => {
@@ -47,26 +49,29 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setLoading(true);
       try {
         const userData = await fetchCurrentUser();
-        setUser(userData);
+        setUser(userData || null); // Ensure user is null if userData is falsy (e.g. undefined from API)
       } catch (error) {
         console.error('Failed to fetch user:', error);
-        // Token might be invalid, clear it
-        localStorage.removeItem('authToken');
+        // Token might be invalid, clear it. Set React state first.
         setToken(null);
         setUser(null);
+        localStorage.removeItem('authToken');
       } finally {
         setLoading(false);
       }
-    } else {
-      setLoading(false); // No token or user already loaded
+    } else if (!token && user) { // If somehow user exists but token doesn't, clear user
+        setUser(null);
+        setLoading(false);
+    }
+    else { // No token (and no user), or token and user already loaded
+      setLoading(false);
     }
   }, [token, user]);
 
 
   useEffect(() => {
     fetchUser();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]); // Re-fetch user if token changes (e.g., on initial load from localStorage)
+  }, [fetchUser]);
 
 
   return (

@@ -19,6 +19,11 @@ interface RegisterData extends LoginCredentials {
   password_confirmation?: string;
 }
 
+// Define the expected response type for successful registration
+interface RegistrationSuccessResponse {
+  message: string;
+}
+
 export const loginUser = async (credentials: LoginCredentials): Promise<AuthResponse> => {
   // Backend might expect 'username' or 'email', adjust payload as needed
   // For this example, let's assume it can handle either in a generic field if backend supports it,
@@ -35,8 +40,8 @@ export const loginUser = async (credentials: LoginCredentials): Promise<AuthResp
   });
 };
 
-export const registerUser = async (data: RegisterData): Promise<AuthResponse> => {
-  return apiRequest<AuthResponse>('/register', {
+export const registerUser = async (data: RegisterData): Promise<RegistrationSuccessResponse> => {
+  return apiRequest<RegistrationSuccessResponse>('/register', {
     method: 'POST',
     body: JSON.stringify(data),
   });

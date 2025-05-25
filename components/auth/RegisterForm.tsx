@@ -1,12 +1,11 @@
 
 import React, { useState } from 'react';
-import { useAuth } from '../../hooks/useAuth';
+import { useNavigate, Link } from 'react-router-dom'; // Added useNavigate
 import { registerUser } from '../../services/authService';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
 import Alert from '../ui/Alert';
 import { ApiError } from '../../types';
-import { Link } from 'react-router-dom';
 
 const RegisterForm: React.FC = () => {
   const [name, setName] = useState('');
@@ -15,9 +14,10 @@ const RegisterForm: React.FC = () => {
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null); // Added for success message
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const navigate = useNavigate(); // Added for redirection
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,12 +28,19 @@ const RegisterForm: React.FC = () => {
     }
     setIsLoading(true);
     setError(null);
+    setSuccessMessage(null);
     setFieldErrors({});
 
     try {
       const response = await registerUser({ name, username, email, password, password_confirmation: passwordConfirmation });
-      login(response.user, response.token);
-      // Navigate to dashboard is handled by App.tsx based on user state
+      setSuccessMessage(response.message);
+      setIsLoading(false); // Stop loading indicator
+      
+      // Redirect to login page after a short delay
+      setTimeout(() => {
+        navigate('/login', { state: { message: response.message } });
+      }, 2000); // 2-second delay
+
     } catch (err) {
       const apiError = err as ApiError;
       setError(apiError.message || 'Registration failed. Please try again.');
@@ -54,6 +61,7 @@ const RegisterForm: React.FC = () => {
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           {error && Object.keys(fieldErrors).length === 0 && <Alert type="error" message={error} onClose={() => setError(null)} />}
+          {successMessage && <Alert type="success" message={successMessage} />}
           
           <Input
             label="Full Name"
@@ -64,6 +72,7 @@ const RegisterForm: React.FC = () => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             error={fieldErrors.name?.[0]}
+            disabled={isLoading || !!successMessage}
           />
           <Input
             label="Username"
@@ -74,6 +83,7 @@ const RegisterForm: React.FC = () => {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             error={fieldErrors.username?.[0]}
+            disabled={isLoading || !!successMessage}
           />
           <Input
             label="Email address"
@@ -84,6 +94,7 @@ const RegisterForm: React.FC = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             error={fieldErrors.email?.[0]}
+            disabled={isLoading || !!successMessage}
           />
           <Input
             label="Password"
@@ -94,6 +105,7 @@ const RegisterForm: React.FC = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             error={fieldErrors.password?.[0]}
+            disabled={isLoading || !!successMessage}
           />
           <Input
             label="Confirm Password"
@@ -104,19 +116,22 @@ const RegisterForm: React.FC = () => {
             value={passwordConfirmation}
             onChange={(e) => setPasswordConfirmation(e.target.value)}
             error={fieldErrors.password_confirmation?.[0]}
+            disabled={isLoading || !!successMessage}
           />
 
           <div>
-            <Button type="submit" className="w-full" isLoading={isLoading} disabled={isLoading}>
-              Register
+            <Button type="submit" className="w-full" isLoading={isLoading} disabled={isLoading || !!successMessage}>
+              {successMessage ? 'Registered!' : 'Register'}
             </Button>
           </div>
-          <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
-            Already have an account?{' '}
-            <Link to="/login" className="font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300">
-              Sign in
-            </Link>
-          </p>
+          {!successMessage && (
+            <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+              Already have an account?{' '}
+              <Link to="/login" className="font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300">
+                Sign in
+              </Link>
+            </p>
+          )}
         </form>
       </div>
     </div>

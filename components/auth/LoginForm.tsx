@@ -1,25 +1,36 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // Added useEffect
 import { useAuth } from '../../hooks/useAuth';
 import { loginUser } from '../../services/authService';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
 import Alert from '../ui/Alert';
 import { ApiError } from '../../types';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom'; // Added useLocation
 
 const LoginForm: React.FC = () => {
   const [identifier, setIdentifier] = useState(''); // For username or email
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [infoMessage, setInfoMessage] = useState<string | null>(null); // Added for messages from other pages
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
+  const location = useLocation(); // Added to get route state
+
+  useEffect(() => {
+    if (location.state?.message) {
+      setInfoMessage(location.state.message);
+      // Clear the state from history so message doesn't reappear on refresh/navigation
+      window.history.replaceState({}, document.title)
+    }
+  }, [location.state]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
+    setInfoMessage(null); // Clear info message on new submit attempt
     setFieldErrors({});
 
     try {
@@ -46,10 +57,11 @@ const LoginForm: React.FC = () => {
           </h2>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          {infoMessage && <Alert type="info" message={infoMessage} onClose={() => setInfoMessage(null)} />}
           {error && !fieldErrors.identifier && !fieldErrors.password && <Alert type="error" message={error} onClose={() => setError(null)} />}
           
           <Input
-            label="Username or Email"
+            label="Email"
             name="identifier"
             type="text"
             autoComplete="username"
